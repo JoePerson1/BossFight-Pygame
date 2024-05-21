@@ -1,4 +1,4 @@
-import pygame
+import pygame.key
 
 from characters import *
 
@@ -35,10 +35,10 @@ class Mode:
                        (gameSquare.image.get_width(), gameSquare.image.get_height() * (1 - ratio)),
                        'black')
       
-      self.character = Character('assets/character.png',
+      self.character = Character('data/character.png',
                                  (2 * (gameSquare.image.get_width() // 8) + gameSquare.rect.left,
                                  gameSquare.rect.centery), 5, (20, 20))
-      self.boss = NotSquare('assets/boss.png',
+      self.boss = NotSquare('data/boss.png',
                             (6 * (gameSquare.image.get_width() // 8) + gameSquare.rect.left,
                             gameSquare.rect.centery), 5, (50, 50))
       
