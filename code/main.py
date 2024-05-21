@@ -1,8 +1,11 @@
+import pygame
 import sys
 import time
 
 from modes import *
 from gameStateManager import *
+from sprites import *
+from characters import *
 
 # DO NOT resize the window while fighting, will cause issues
 
@@ -184,7 +187,7 @@ class PlayOptions:  # TODO fix bug where if you hold a button you cant go back
                             (gameSquare.image.get_width() * (1 / 4), gameSquare.image.get_height() / 2, 10),
                             'black')
       
-      self.character = NotSquare('data/character.png',
+      self.character = NotSquare('assets/character.png',
                                  (((self.easyButton.rect.left - gameSquare.rect.left) / 2) + gameSquare.rect.left,
                                   gameSquare.rect.centery), 5, (250, 250))
       
