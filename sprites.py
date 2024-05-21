@@ -1,7 +1,7 @@
 import pygame  # TODO hitboxes different than sprite
 
 class NotSquare(pygame.sprite.Sprite):  # TODO delete speed? (keep it until find a reason to remove it)
-  def __init__(self, picture, pos, speed, scale):
+  def __init__(self, picture, pos, speed, scale):   # TODO make scale normal but still stretchable
     pygame.sprite.Sprite.__init__(self)
     self.image = pygame.image.load(picture).convert_alpha()
     self.image = pygame.transform.scale(self.image, scale)
@@ -11,15 +11,16 @@ class NotSquare(pygame.sprite.Sprite):  # TODO delete speed? (keep it until find
     self.decimal = pygame.math.Vector2([self.rect.centerx,
                                         self.rect.centery])
 
-class Square(pygame.sprite.Sprite):  # TODO make squareColor optional
-  def __init__(self, pos, size, squareColor, radius=0):
+class Square(pygame.sprite.Sprite):
+  def __init__(self, pos, size, squareColor=None, radius=0):
     pygame.sprite.Sprite.__init__(self)
     self.image = pygame.Surface((size[0], size[1]))
-    self.color = squareColor
-    self.image.fill(squareColor)
     self.rect = self.image.get_rect()
     self.rect.center = (pos[0], pos[1])
     self.borderRadius = radius
+    if squareColor is not None:
+      self.color = squareColor
+      self.image.fill(squareColor)
   def draw(self, screen):
     pygame.draw.rect(screen, self.color, self.rect, border_radius=self.borderRadius)
 

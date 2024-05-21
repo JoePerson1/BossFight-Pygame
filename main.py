@@ -1,4 +1,5 @@
 import sys
+import time
 
 from modes import *
 from gameStateManager import *
@@ -18,7 +19,7 @@ class Game:
     windowWidth = 1920
     windowHeight = 1080
     self.gameSquare = Square((windowWidth / 2, windowHeight / 2),
-                             (windowWidth, windowHeight), 'white')
+                             (windowWidth, windowHeight))
     self.screen = pygame.display.set_mode((windowWidth, windowHeight), pygame.RESIZABLE)
     self.clock = pygame.time.Clock()
     
@@ -32,48 +33,52 @@ class Game:
     
     self.states = {'main': self.main, 'play': self.play, 'settings': self.settings, 'mode': self.mode}
     
-    self.lastKey = None
+    self.lastSingleKey = None
     self.dash = False
+    self.keyPressDict = {pygame.K_w: False, pygame.K_a: False, pygame.K_s: False, pygame.K_d: False,
+                         pygame.K_SPACE: False}
   
   def run(self):
     while True:
-      isKeyDown = False
+      keyDownCount = 0
       for event in pygame.event.get():
         if event.type == pygame.QUIT:
           pygame.quit()
           sys.exit()
-        elif event.type == pygame.KEYDOWN:
-          self.key = event.key
-          isKeyDown = True
-          print('KeyDetected:' + str(event.key))
-        elif event.type != pygame.KEYDOWN and not isKeyDown:
-          print('Key NOT detected')
-          self.key = None
-        if event.type == pygame.VIDEORESIZE:
+        elif event.type == pygame.VIDEORESIZE:
           self.reRender = True
           windowWidth, windowHeight = pygame.display.get_surface().get_size()
           print('windowWidth: ' + str(windowWidth) + ' | WindowHeight: ' + str(windowHeight))  # TODO delete later
-          self.TL = Square((windowWidth / 2, windowHeight / 2), (windowWidth, windowHeight), 'white')
-          self.BR = Square((windowWidth / 2, windowHeight / 2), (windowWidth, windowHeight), 'white')
+          self.TL = Square((windowWidth / 2, windowHeight / 2), (windowWidth, windowHeight), 'black')
+          self.BR = Square((windowWidth / 2, windowHeight / 2), (windowWidth, windowHeight), 'black')
           if windowWidth > windowHeight * (16 / 9):
             self.gameSquare = Square((windowWidth / 2, windowHeight / 2),
-                                     (windowHeight * (16 / 9), windowHeight), 'black')
+                                     (windowHeight * (16 / 9), windowHeight))
             self.TL.rect.right = self.gameSquare.rect.left
             self.BR.rect.left = self.gameSquare.rect.right
           else:
             self.gameSquare = Square((windowWidth / 2, windowHeight / 2),
-                                     (windowWidth, windowWidth * (9 / 16)), 'black')
+                                     (windowWidth, windowWidth * (9 / 16)))
             self.TL.rect.bottom = self.gameSquare.rect.top
             self.BR.rect.top = self.gameSquare.rect.bottom
-          
-          # self.screen.blit(self.gameSquare.image, self.gameSquare.rect)
-          self.screen.blit(self.TL.image, self.TL.rect)
-          self.screen.blit(self.BR.image, self.BR.rect)
+            
+            self.screen.blit(self.TL.image, self.TL.rect)
+            self.screen.blit(self.BR.image, self.BR.rect)
+        
+        if event.type == pygame.KEYDOWN:
+          if event.key == pygame.K_w or event.key == pygame.K_s or \
+              event.key == pygame.K_a or event.key == pygame.K_d:
+            keyDownCount += 1
+            singleKey = event.key
+            print(keyDownCount)
+      if keyDownCount == 1:
+        if singleKey == self.lastSingleKey:
+          print('ok')
+        self.lastSingleKey = singleKey
       
-      print('-------------------')
-      self.states[self.gameStateManager.getState()].run(self.gameSquare, self.reRender, self.key)
-      print(self.key)
+      # TODO remove self.key later?
       self.key = None
+      self.states[self.gameStateManager.getState()].run(self.gameSquare, self.reRender, self.key)
       self.reRender = False
       
       pygame.display.update()
@@ -102,7 +107,7 @@ class MainMenu:  # TODO make it so that it re-renders when it switches states
       buttonSpacing = gameSquare.image.get_height() * (1 / 5)
       
       self.playButton = Button((gameSquare.rect.centerx, buttonStart), (gameSquare.image.get_width() / 3,
-                                gameSquare.image.get_height() / 8), 'dark blue',
+                                                                        gameSquare.image.get_height() / 8), 'dark blue',
                                30)
       self.playButton.mergeText('Play', self.playButton.rect.center, None, 'white',
                                 gameSquare.image.get_height() // 12)
@@ -110,7 +115,7 @@ class MainMenu:  # TODO make it so that it re-renders when it switches states
                                    (gameSquare.image.get_width() / 3, gameSquare.image.get_height() / 8),
                                    'dark blue', 30)
       self.settingsButton.mergeText('Settings', self.settingsButton.rect.center, None, 'white',
-                                gameSquare.image.get_height() // 12)
+                                    gameSquare.image.get_height() // 12)
       self.quitButton = Button((gameSquare.rect.centerx, buttonStart + 2 * buttonSpacing),
                                (gameSquare.image.get_width() / 3, gameSquare.image.get_height() / 8),
                                'dark blue', 30)
@@ -154,21 +159,21 @@ class PlayOptions:  # TODO fix bug where if you hold a button you cant go back
                                                    gameSquare.image.get_height() * (1 / 8) + gameSquare.rect.top),
                         None, 'black', gameSquare.image.get_height() // 5)
       self.easyButton = Button((gameSquare.rect.centerx, buttonStart), (gameSquare.image.get_width() / 4,
-                                gameSquare.image.get_height() / 8), 'green', 15)
+                                                                        gameSquare.image.get_height() / 8), 'green', 15)
       self.easyButton.mergeText('Easy', self.easyButton.rect.center, None, 'black',
                                 gameSquare.image.get_height() // 12)
-
+      
       self.mediumButton = Button((gameSquare.rect.centerx, buttonStart + buttonSpacing),
                                  (gameSquare.image.get_width() / 4, gameSquare.image.get_height() / 8),
                                  'orange', 15)
       self.mediumButton.mergeText('Normal', self.mediumButton.rect.center, None, 'black',
                                   gameSquare.image.get_height() // 12)
-
+      
       self.hardButton = Button((gameSquare.rect.centerx, buttonStart + 2 * buttonSpacing),
                                (gameSquare.image.get_width() / 4, gameSquare.image.get_height() / 8),
                                'red', 15)
       self.hardButton.mergeText('Hard', self.hardButton.rect.center, None, 'black',
-                                  gameSquare.image.get_height() // 12)
+                                gameSquare.image.get_height() // 12)
       
       self.descTitle = Text('Description',
                             (((gameSquare.rect.right - self.easyButton.rect.right) / 2) + self.easyButton.rect.right,
@@ -181,7 +186,7 @@ class PlayOptions:  # TODO fix bug where if you hold a button you cant go back
       
       self.character = NotSquare('data/character.png',
                                  (((self.easyButton.rect.left - gameSquare.rect.left) / 2) + gameSquare.rect.left,
-                                 gameSquare.rect.centery), 5, (250, 250))
+                                  gameSquare.rect.centery), 5, (250, 250))
       
       # TODO highlight method
       # TODO cooldown for buttons
