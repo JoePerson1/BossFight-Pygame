@@ -1,5 +1,5 @@
 
 /__pycache__
 /.idea
-/.gitignore
+.gitignore
 .idea/workspace.xml
