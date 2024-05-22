@@ -35,12 +35,12 @@ class Game:
     
     self.lastSingleKey = None
     self.dash = False
-    self.keyPressDict = {pygame.K_w: False, pygame.K_a: False, pygame.K_s: False, pygame.K_d: False,
-                         pygame.K_SPACE: False}
   
   def run(self):
     while True:
       keyDownCount = 0
+      self.keyPresses = {pygame.K_w: False, pygame.K_a: False, pygame.K_s: False, pygame.K_d: False,
+                         pygame.K_SPACE: False}
       for event in pygame.event.get():
         if event.type == pygame.QUIT:
           pygame.quit()
@@ -65,20 +65,21 @@ class Game:
             self.screen.blit(self.TL.image, self.TL.rect)
             self.screen.blit(self.BR.image, self.BR.rect)
         
-        if event.type == pygame.KEYDOWN:
+        if event.type == pygame.KEYDOWN:  # TODO make keys scalable
           if event.key == pygame.K_w or event.key == pygame.K_s or \
               event.key == pygame.K_a or event.key == pygame.K_d:
             keyDownCount += 1
             singleKey = event.key
+            self.keyPresses[singleKey] = True
             print(keyDownCount)
-      if keyDownCount == 1:
+      if keyDownCount == 1:  # TODO move this dash mechanic elsewhere
         if singleKey == self.lastSingleKey:
           print('ok')
         self.lastSingleKey = singleKey
       
-      # TODO remove self.key later?
-      self.key = None
-      self.states[self.gameStateManager.getState()].run(self.gameSquare, self.reRender, self.key)
+      print(self.keyPresses)
+
+      self.states[self.gameStateManager.getState()].run(self.gameSquare, self.reRender, self.keyPresses)
       self.reRender = False
       
       pygame.display.update()
@@ -159,7 +160,8 @@ class PlayOptions:  # TODO fix bug where if you hold a button you cant go back
                                                    gameSquare.image.get_height() * (1 / 8) + gameSquare.rect.top),
                         None, 'black', gameSquare.image.get_height() // 5)
       self.easyButton = Button((gameSquare.rect.centerx, buttonStart), (gameSquare.image.get_width() / 4,
-                                                                        gameSquare.image.get_height() / 8), 'green', 15)
+                                                                        gameSquare.image.get_height() / 8),
+                               'green', 15)
       self.easyButton.mergeText('Easy', self.easyButton.rect.center, None, 'black',
                                 gameSquare.image.get_height() // 12)
       
@@ -184,7 +186,7 @@ class PlayOptions:  # TODO fix bug where if you hold a button you cant go back
                             (gameSquare.image.get_width() * (1 / 4), gameSquare.image.get_height() / 2, 10),
                             'black')
       
-      self.character = NotSquare('data/character.png',
+      self.character = NotSquare('assets/character.png',
                                  (((self.easyButton.rect.left - gameSquare.rect.left) / 2) + gameSquare.rect.left,
                                   gameSquare.rect.centery), 5, (250, 250))
       
