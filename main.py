@@ -77,14 +77,15 @@ class Game:
           print('ok')
         self.lastSingleKey = singleKey
       
-      print(self.keyPresses)
+      print(self.keyPresses)  # TODO DECIDE WHETHER TO PUT DOUBLE CLICK DETECTION HERE OR CHARACTER CLASS
+      print(list(self.keyPresses.values()))
 
       self.states[self.gameStateManager.getState()].run(self.gameSquare, self.reRender, self.keyPresses)
       self.reRender = False
       
       pygame.display.update()
       self.clock.tick(FPS)
-
+      # TODO fps counter
 
 class MainMenu:  # TODO make it so that it re-renders when it switches states
   def __init__(self, display, gameStateManager):

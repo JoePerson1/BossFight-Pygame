@@ -5,6 +5,8 @@ from sprites import *
 class Character(NotSquare):
   def __init__(self, picture, pos, speed, scale):
     NotSquare.__init__(self, picture, pos, speed, scale)
+    
+    self.lastKey = None
   
   def movement(self, keys, arena):
     horizontalMovement = keys[pygame.K_d] - keys[pygame.K_a]
@@ -33,7 +35,11 @@ class Character(NotSquare):
       # TODO make dash double press and not just hold
       # TODO make dash shorter time
   def dash(self, keyPresses):
-    pass
+    sumKeys = 0
+    for i, key in enumerate(list(keyPresses.values())[:3]):
+      sumKeys += key
+      if i == 3 and sumKeys == 1:
+        self.lastKey = key
     
 class Boss(NotSquare):
   def __init__(self, picture, pos, speed, scale):
