@@ -19,7 +19,7 @@ class Mode:
     
     self.start = True
     
-  def run(self, gameSquare, reRender, key):
+  def run(self, gameSquare, reRender, keyPresses):
     if self.start:
       reRender = True
       self.start = False
@@ -48,9 +48,7 @@ class Mode:
     self.modeStates[self.gameStateManager.getMode()].run(self.display, self.gameStateManager)
     
     self.character.movement(keys, self.arena)
-    dashKeys = [pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d]
-    if key in dashKeys:
-      self.character.dash(key)
+    self.character.dash(keyPresses)
     
     self.display.blit(self.arena.image, self.arena.rect)
     self.display.blit(self.character.image, self.character.rect)
