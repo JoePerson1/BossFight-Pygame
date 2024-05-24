@@ -1,5 +1,7 @@
 import sys
 import time
+# TODO import pygame GUI and other pygame libraries?
+# https://www.reddit.com/r/pygame/comments/89ygm7/pygame_awesome_libraries/
 
 from modes import *
 from gameStateManager import *
@@ -98,33 +100,36 @@ class MainMenu:  # TODO make it so that it re-renders when it switches states
       reRender = True
       self.start = False
     if reRender:
-      self.background = gameSquare
-      self.background.color = 'gray'
+      self.background = NotSquare('assets/backgrounds/main_menu_background.png',
+                                  ((gameSquare.rect.right + gameSquare.rect.left) / 2,
+                                   (gameSquare.rect.top + gameSquare.rect.bottom) / 2,),
+                                  (gameSquare.image.get_width(), gameSquare.image.get_width() / 1920 * 1076))
       
       self.title = Text('Assignment Four', (gameSquare.rect.centerx,
-                                            gameSquare.image.get_height() * (1 / 8) + gameSquare.rect.top),
-                        None, 'white', gameSquare.image.get_height() // 5, True)
+                                            gameSquare.image.get_height() * (3 / 16) + gameSquare.rect.top),
+                        'assets/fonts/pressStart.ttf', 'black',
+                        gameSquare.image.get_height() // 12)
       
       buttonStart = gameSquare.image.get_height() * (2 / 5) + gameSquare.rect.top
       buttonSpacing = gameSquare.image.get_height() * (1 / 5)
       
       self.playButton = Button((gameSquare.rect.centerx, buttonStart), (gameSquare.image.get_width() / 3,
-                                                                        gameSquare.image.get_height() / 8), 'dark blue',
+                                  gameSquare.image.get_height() / 8), 'dark green',
                                30)
-      self.playButton.mergeText('Play', self.playButton.rect.center, None, 'white',
-                                gameSquare.image.get_height() // 12)
+      self.playButton.mergeText('Play', self.playButton.rect.center, 'assets/fonts/pressStart.ttf',
+                                'white', gameSquare.image.get_height() // 20)
       self.settingsButton = Button((gameSquare.rect.centerx, buttonStart + buttonSpacing),
                                    (gameSquare.image.get_width() / 3, gameSquare.image.get_height() / 8),
-                                   'dark blue', 30)
-      self.settingsButton.mergeText('Settings', self.settingsButton.rect.center, None, 'white',
-                                    gameSquare.image.get_height() // 12)
+                                   'dark green', 30)
+      self.settingsButton.mergeText('Settings', self.settingsButton.rect.center, 'assets/fonts/pressStart.ttf',
+                                    'white', gameSquare.image.get_height() // 20)
       self.quitButton = Button((gameSquare.rect.centerx, buttonStart + 2 * buttonSpacing),
                                (gameSquare.image.get_width() / 3, gameSquare.image.get_height() / 8),
-                               'dark blue', 30)
-      self.quitButton.mergeText('Quit', self.quitButton.rect.center, None, 'white',
-                                gameSquare.image.get_height() // 12)
+                               'dark green', 30)
+      self.quitButton.mergeText('Quit', self.quitButton.rect.center, 'assets/fonts/pressStart.ttf',
+                                'white', gameSquare.image.get_height() // 20)
     
-    self.background.draw(self.display)
+    self.display.blit(self.background.image, self.background.rect)
     self.playButton.draw(self.display)
     self.settingsButton.draw(self.display)
     self.quitButton.draw(self.display)
@@ -146,13 +151,15 @@ class PlayOptions:  # TODO fix bug where if you hold a button you cant go back
     self.start = True
     self.highlightCount = 0
   
-  def run(self, gameSquare, reRender, key):
+  def run(self, gameSquare, reRender, keyPresses):
     if self.start:
       reRender = True
       self.start = False
     if reRender:
-      self.background = gameSquare
-      self.background.color = 'gray'
+      self.background = NotSquare('assets/backgrounds/main_menu_background.png',
+                                  ((gameSquare.rect.right + gameSquare.rect.left) / 2,
+                                   (gameSquare.rect.top + gameSquare.rect.bottom) / 2,),
+                                  (gameSquare.image.get_width(), gameSquare.image.get_width() / 1920 * 1076))
       
       buttonStart = gameSquare.image.get_height() * (2 / 5) + gameSquare.rect.top
       buttonSpacing = gameSquare.image.get_height() * (1 / 5)
@@ -189,12 +196,12 @@ class PlayOptions:  # TODO fix bug where if you hold a button you cant go back
       
       self.character = NotSquare('assets/character.png',
                                  (((self.easyButton.rect.left - gameSquare.rect.left) / 2) + gameSquare.rect.left,
-                                  gameSquare.rect.centery), 5, (250, 250))
+                                  gameSquare.rect.centery), (250, 250))
       
       # TODO highlight method
       # TODO cooldown for buttons
     
-    self.background.draw(self.display)
+    self.display.blit(self.background.image, self.background.rect)
     self.display.blit(self.character.image, self.character.rect)
     self.descBox.draw(self.display)
     self.display.blit(self.title.text, self.title.textRect)
@@ -217,15 +224,17 @@ class Settings:
     self.gameStateManager = gameStateManager
     self.start = True
   
-  def run(self, gameSquare, reRender, key):
+  def run(self, gameSquare, reRender, keyPresses):
     if self.start:
       reRender = True
       self.start = False
     if reRender:
-      self.background = gameSquare
-      self.background.color = 'gray'
-    
-    self.background.draw(self.display)
+      self.background = NotSquare('assets/backgrounds/main_menu_background.png',
+                                  ((gameSquare.rect.right + gameSquare.rect.left) / 2,
+                                   (gameSquare.rect.top + gameSquare.rect.bottom) / 2,),
+                                  (gameSquare.image.get_width(), gameSquare.image.get_width() / 1920 * 1076))
+      
+    self.display.blit(self.background.image, self.background.rect)
     
     keys = pygame.key.get_pressed()
     if keys[pygame.K_ESCAPE]:

@@ -26,21 +26,20 @@ class Mode:
     if reRender:
       ratio = 7 / 8
       
-      self.arena = Square(((gameSquare.image.get_width() / 2) + gameSquare.rect.left,
-                          (gameSquare.image.get_height() * (ratio / 2)) + gameSquare.rect.top),
+      self.arena = Square(((gameSquare.image.get_width() / 2) + gameSquare.rect.left, 0),
                           (gameSquare.image.get_width(), gameSquare.image.get_height() * ratio),
                           'black')
-      self.ui = Square(((gameSquare.image.get_width() / 2) + gameSquare.rect.left,
-                       (gameSquare.image.get_height() * ((1 - ratio) / 2)) + gameSquare.rect.top),
+      self.arena.rect.top = gameSquare.rect.top
+      self.ui = Square(((gameSquare.image.get_width() / 2) + gameSquare.rect.left, 0),
                        (gameSquare.image.get_width(), gameSquare.image.get_height() * (1 - ratio)),
-                       'black')
-      
+                       'white')
+      self.ui.rect.bottom = gameSquare.rect.bottom
       self.character = Character('assets/character.png',
                                  (2 * (gameSquare.image.get_width() // 8) + gameSquare.rect.left,
-                                 gameSquare.rect.centery), 5, (20, 20))
+                                 gameSquare.rect.centery), (20, 20))
       self.boss = NotSquare('assets/boss.png',
                             (6 * (gameSquare.image.get_width() // 8) + gameSquare.rect.left,
-                            gameSquare.rect.centery), 5, (50, 50))
+                            gameSquare.rect.centery), (50, 50))
       
       reRender = False
     
@@ -51,6 +50,7 @@ class Mode:
     self.character.dash(keyPresses)
     
     self.display.blit(self.arena.image, self.arena.rect)
+    self.display.blit(self.ui.image, self.ui.rect)
     self.display.blit(self.character.image, self.character.rect)
     self.display.blit(self.boss.image, self.boss.rect)
 

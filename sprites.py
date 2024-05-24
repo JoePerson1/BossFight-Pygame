@@ -1,13 +1,12 @@
 import pygame  # TODO hitboxes different than sprite
 
-class NotSquare(pygame.sprite.Sprite):  # TODO delete speed? (keep it until find a reason to remove it)
-  def __init__(self, picture, pos, speed, scale):   # TODO make scale normal but still stretchable
+class NotSquare(pygame.sprite.Sprite):
+  def __init__(self, picture, pos, scale):   # TODO make scale normal but still stretchable
     pygame.sprite.Sprite.__init__(self)
     self.image = pygame.image.load(picture).convert_alpha()
     self.image = pygame.transform.scale(self.image, scale)
     self.rect = self.image.get_rect()
     self.rect.center = (pos[0], pos[1])
-    self.speed = speed
     self.decimal = pygame.math.Vector2([self.rect.centerx,
                                         self.rect.centery])
 
@@ -25,8 +24,8 @@ class Square(pygame.sprite.Sprite):
     pygame.draw.rect(screen, self.color, self.rect, border_radius=self.borderRadius)
 
 class Text:
-  def __init__(self, text, pos, font, color, size, italic=None, bold=None):
-    textFont = pygame.font.SysFont(font, size, italic=italic, bold=bold)
+  def __init__(self, text, pos, font, color, size):  # TODO fix bold/italics
+    textFont = pygame.font.Font(font, size)
     self.text = textFont.render(text, True, color)
     self.textRect = self.text.get_rect(center=(pos[0], pos[1]))
     
@@ -34,10 +33,10 @@ class Button(Square, Text, NotSquare):
   def __init__(self, pos, size, squareColor, radius=0):
     Square.__init__(self, pos, size, squareColor, radius)
     self.pressed = False
-  def mergeText(self, text, pos, font, color, size, italic=None, bold=None):
-    Text.__init__(self, text, pos, font, color, size, italic, bold)
-  def mergeImage(self, picture, pos, speed, scale):
-    NotSquare.__init__(self, picture, pos, speed, scale)
+  def mergeText(self, text, pos, font, color, size):
+    Text.__init__(self, text, pos, font, color, size)
+  def mergeImage(self, picture, pos, scale):
+    NotSquare.__init__(self, picture, pos, scale)
   def draw(self, screen):
     pygame.draw.rect(screen, self.color, self.rect, border_radius=self.borderRadius)
     screen.blit(self.text, self.textRect)

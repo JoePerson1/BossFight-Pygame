@@ -3,9 +3,9 @@ import pygame.time
 from sprites import *
 
 class Character(NotSquare):
-  def __init__(self, picture, pos, speed, scale):
-    NotSquare.__init__(self, picture, pos, speed, scale)
-    
+  def __init__(self, picture, pos, scale):
+    NotSquare.__init__(self, picture, pos, scale)
+    self.speed = 5
     self.lastKey = None
   
   def movement(self, keys, arena):
@@ -42,13 +42,13 @@ class Character(NotSquare):
         self.lastKey = key
         
 class Enemy(NotSquare):
-  def __init__(self, picture, pos, speed, scale):
+  def __init__(self, picture, pos, scale, speed):
     pass
   
     
-class Boss(NotSquare):  # TODO make class for general (toPlayerVector and collide death)
-  def __init__(self, picture, pos, speed, scale):
-    NotSquare.__init__(self, picture, pos, speed, scale)
+class Boss(NotSquare):  # TODO make class for general (toPlayerVector and collide death) and speed
+  def __init__(self, picture, pos, scale):
+    NotSquare.__init__(self, picture, pos, scale)
     
   def movement(self, arena):
     if self.rect.left < arena.rect.left:
