@@ -21,3 +21,4 @@ secondary bar conditions:
 cooldown
 no hit for period of time
 attacking fills it
+t
