@@ -40,8 +40,13 @@ class Character(NotSquare):
       sumKeys += key
       if i == 3 and sumKeys == 1:
         self.lastKey = key
+        
+class Enemy(NotSquare):
+  def __init__(self, picture, pos, speed, scale):
+    pass
+  
     
-class Boss(NotSquare):
+class Boss(NotSquare):  # TODO make class for general (toPlayerVector and collide death)
   def __init__(self, picture, pos, speed, scale):
     NotSquare.__init__(self, picture, pos, speed, scale)
     
