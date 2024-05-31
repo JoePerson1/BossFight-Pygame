@@ -37,17 +37,23 @@ class Mode:
       self.character = Character('assets/character.png',
                                  (2 * (gameSquare.image.get_width() // 8) + gameSquare.rect.left,
                                  gameSquare.rect.centery), (20, 20))
-      self.boss = NotSquare('assets/boss.png',
+      self.boss = Boss('assets/boss.png',
                             (6 * (gameSquare.image.get_width() // 8) + gameSquare.rect.left,
                             gameSquare.rect.centery), (50, 50))
       
       reRender = False
     
     keys = pygame.key.get_pressed()
-    self.modeStates[self.gameStateManager.getMode()].run(self.display, self.gameStateManager)
+    self.modeStates[self.gameStateManager.getMode()].run(self.arena, self.gameStateManager, self.character,
+                                                         self.boss)
     
     self.character.movement(keys, self.arena)
     self.character.dash(self.display, keyPresses)
+    self.boss.movement(self.arena)
+    
+    if not self.character.invincible:
+      if self.character.rect.colliderect(self.boss.rect):
+        print('killed')
     
     self.display.blit(self.arena.image, self.arena.rect)
     self.display.blit(self.ui.image, self.ui.rect)
@@ -57,19 +63,19 @@ class Mode:
 class EasyMode:
   def __init__(self, display, gameStateManager):
     pass
-  def run(self, gameSquare, reRender):
-    pass
+  def run(self, arena, reRender, character, boss):
+    boss.follow(character, 2)
   
 class NormalMode:
   def __init__(self, display, gameStateManager):
     pass
-  def run(self, gameSquare, reRender):
+  def run(self, arena, reRender, character, boss):
     pass
   
 class HardMode:
   def __init__(self, display, gameStateManager):
     pass
-  def run(self, gameSquare, reRender):
+  def run(self, arena, reRender, character, boss):
     pass
 
   

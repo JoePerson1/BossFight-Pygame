@@ -1,6 +1,7 @@
 import pygame.time
 
 from sprites import *
+from functions import *
 
 class Character(NotSquare):
   def __init__(self, picture, pos, scale):
@@ -11,6 +12,8 @@ class Character(NotSquare):
     self.defaultDashDuration = 5
     self.dashDuration = self.defaultDashDuration
     self.dashSpeed = 10
+    
+    self.invincible = False
   
   def movement(self, keys, arena):
     horizontalMovement = keys[pygame.K_d] - keys[pygame.K_a]
@@ -90,4 +93,10 @@ class Boss(NotSquare):  # TODO make class for general (toPlayerVector and collid
       self.rect.bottom = arena.rect.bottom
       self.decimal = self.rect.center
     
-    
+  def follow(self, character, speed):
+    self.decimal += toCharacterVector(character.rect.center, self.rect.center) * speed
+    self.rect.center = self.decimal
+  
+  def cleave(self, reelTime, attackTime, distance):
+    pass
+  
