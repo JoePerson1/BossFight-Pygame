@@ -7,6 +7,10 @@ class Character(NotSquare):
     NotSquare.__init__(self, picture, pos, scale)
     self.speed = 5
     self.lastKey = None
+    self.isDash = False
+    self.defaultDashDuration = 5
+    self.dashDuration = self.defaultDashDuration
+    self.dashSpeed = 10
   
   def movement(self, keys, arena):
     horizontalMovement = keys[pygame.K_d] - keys[pygame.K_a]
@@ -34,13 +38,35 @@ class Character(NotSquare):
       
       # TODO make dash double press and not just hold
       # TODO make dash shorter time
-  def dash(self, keyPresses):
-    sumKeys = 0
-    for i, key in enumerate(list(keyPresses.values())[:3]):
-      sumKeys += key
-      if i == 3 and sumKeys == 1:
-        self.lastKey = key
-        
+  def dash(self, display, keyPresses):
+    if not self.isDash:
+      trueKey = None
+      sumKeys = 0
+      for key, value in list(keyPresses.items())[:4]:
+        if value:
+          sumKeys += value
+          trueKey = key
+        if key == pygame.K_d and sumKeys == 1:
+          if self.lastKey == trueKey:
+            self.isDash = True
+            self.dashDuration = self.defaultDashDuration
+          self.lastKey = trueKey
+    
+    if self.isDash:
+      # display.blit(self.image, self.rect)  # TODO make it a dif class so it blits
+      self.dashDuration -= 1
+      if self.lastKey == pygame.K_w:
+        self.decimal[1] -= self.dashSpeed
+      elif self.lastKey == pygame.K_a:
+        self.decimal[0] -= self.dashSpeed
+      elif self.lastKey == pygame.K_s:
+        self.decimal[1] += self.dashSpeed
+      elif self.lastKey == pygame.K_d:
+        self.decimal[0] += self.dashSpeed
+      if self.dashDuration == 0:
+        self.isDash = False
+        self.lastKey = None
+    
 class Enemy(NotSquare):
   def __init__(self, picture, pos, scale, speed):
     pass

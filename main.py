@@ -40,7 +40,6 @@ class Game:
   
   def run(self):
     while True:
-      keyDownCount = 0
       self.keyPresses = {pygame.K_w: False, pygame.K_a: False, pygame.K_s: False, pygame.K_d: False,
                          pygame.K_SPACE: False}
       for event in pygame.event.get():
@@ -68,19 +67,12 @@ class Game:
             self.screen.blit(self.BR.image, self.BR.rect)
         
         if event.type == pygame.KEYDOWN:  # TODO make keys scalable
-          if event.key == pygame.K_w or event.key == pygame.K_s or \
-              event.key == pygame.K_a or event.key == pygame.K_d:
-            keyDownCount += 1
+          if event.key in self.keyPresses:
             singleKey = event.key
             self.keyPresses[singleKey] = True
-            print(keyDownCount)
-      if keyDownCount == 1:  # TODO move this dash mechanic elsewhere
-        if singleKey == self.lastSingleKey:
-          print('ok')
-        self.lastSingleKey = singleKey
       
-      print(self.keyPresses)  # TODO DECIDE WHETHER TO PUT DOUBLE CLICK DETECTION HERE OR CHARACTER CLASS
-      print(list(self.keyPresses.values()))
+      # print(self.keyPresses)  # TODO DECIDE WHETHER TO PUT DOUBLE CLICK DETECTION HERE OR CHARACTER CLASS
+      # print(list(self.keyPresses.values()))
 
       self.states[self.gameStateManager.getState()].run(self.gameSquare, self.reRender, self.keyPresses)
       self.reRender = False
@@ -89,13 +81,13 @@ class Game:
       self.clock.tick(FPS)
       # TODO fps counter
 
-class MainMenu:  # TODO make it so that it re-renders when it switches states
+class MainMenu:
   def __init__(self, display, gameStateManager):
     self.display = display
     self.gameStateManager = gameStateManager
     self.start = True
   
-  def run(self, gameSquare, reRender, key):
+  def run(self, gameSquare, reRender, keyPresses):
     if self.start:
       reRender = True
       self.start = False
@@ -130,10 +122,13 @@ class MainMenu:  # TODO make it so that it re-renders when it switches states
                                 'white', gameSquare.image.get_height() // 20)
     
     self.display.blit(self.background.image, self.background.rect)
-    self.playButton.draw(self.display)
-    self.settingsButton.draw(self.display)
-    self.quitButton.draw(self.display)
-    self.display.blit(self.title.text, self.title.textRect)
+    self.display.blit(self.title.text, self.title.textRect)  # TODO optimize???
+    
+    self.buttonAssets = [self.playButton, self.settingsButton, self.quitButton]
+    for asset in self.buttonAssets:
+      asset.drawRect(self.display)
+      asset.drawText(self.display)
+      asset.checkClick()
     
     if self.playButton.pressed:
       self.gameStateManager.setState('play')
@@ -203,12 +198,15 @@ class PlayOptions:  # TODO fix bug where if you hold a button you cant go back
     
     self.display.blit(self.background.image, self.background.rect)
     self.display.blit(self.character.image, self.character.rect)
-    self.descBox.draw(self.display)
+    self.descBox.drawRect(self.display)
     self.display.blit(self.title.text, self.title.textRect)
     self.display.blit(self.descTitle.text, self.descTitle.textRect)
-    self.easyButton.draw(self.display)
-    self.mediumButton.draw(self.display)
-    self.hardButton.draw(self.display)
+    
+    self.buttonAssets = [self.easyButton, self.mediumButton, self.hardButton]
+    for asset in self.buttonAssets:
+      asset.drawRect(self.display)
+      asset.drawText(self.display)
+      asset.checkClick()
     
     keys = pygame.key.get_pressed()
     if keys[pygame.K_ESCAPE]:
@@ -233,13 +231,19 @@ class Settings:
                                   ((gameSquare.rect.right + gameSquare.rect.left) / 2,
                                    (gameSquare.rect.top + gameSquare.rect.bottom) / 2,),
                                   (gameSquare.image.get_width(), gameSquare.image.get_width() / 1920 * 1076))
+      self.backButton = Button((7 * gameSquare.image.get_width() / 8, 1 * gameSquare.image.get_height() / 16),
+                               (50, 50), 'black')
+      self.backButton.mergeImage('assets/placeholder.png', self.backButton.rect.center, (50, 50))
       
     self.display.blit(self.background.image, self.background.rect)
+    self.backButton.drawImage(self.display)
+    self.backButton.checkClick()
     
     keys = pygame.key.get_pressed()
     if keys[pygame.K_ESCAPE]:
       self.gameStateManager.setState('main')
-
+    elif self.backButton.pressed:
+      self.gameStateManager.setState('main')
 
 game = Game()
 game.run()

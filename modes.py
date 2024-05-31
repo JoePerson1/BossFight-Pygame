@@ -47,7 +47,7 @@ class Mode:
     self.modeStates[self.gameStateManager.getMode()].run(self.display, self.gameStateManager)
     
     self.character.movement(keys, self.arena)
-    self.character.dash(keyPresses)
+    self.character.dash(self.display, keyPresses)
     
     self.display.blit(self.arena.image, self.arena.rect)
     self.display.blit(self.ui.image, self.ui.rect)
