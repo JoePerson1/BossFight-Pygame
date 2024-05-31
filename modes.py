@@ -52,7 +52,7 @@ class Mode:
     self.boss.movement(self.arena)
     
     if not self.character.invincible:
-      if self.character.rect.colliderect(self.boss.rect):
+      if self.boss.rect.collidepoint(self.character.rect.center):
         print('killed')
     
     self.display.blit(self.arena.image, self.arena.rect)
@@ -64,7 +64,8 @@ class EasyMode:
   def __init__(self, display, gameStateManager):
     pass
   def run(self, arena, reRender, character, boss):
-    boss.follow(character, 2)
+    # boss.follow(character, 2)
+    boss.cleave(character, 60, 2, 20, 40)
   
 class NormalMode:
   def __init__(self, display, gameStateManager):

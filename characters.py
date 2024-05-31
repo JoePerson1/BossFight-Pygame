@@ -11,7 +11,7 @@ class Character(NotSquare):
     self.isDash = False
     self.defaultDashDuration = 5
     self.dashDuration = self.defaultDashDuration
-    self.dashSpeed = 10
+    self.dashSpeed = 20  # TODO add lerp to dash (and basically like half the moves)
     
     self.invincible = False
   
@@ -58,14 +58,17 @@ class Character(NotSquare):
     if self.isDash:
       # display.blit(self.image, self.rect)  # TODO make it a dif class so it blits
       self.dashDuration -= 1
-      if self.lastKey == pygame.K_w:
-        self.decimal[1] -= self.dashSpeed
-      elif self.lastKey == pygame.K_a:
-        self.decimal[0] -= self.dashSpeed
-      elif self.lastKey == pygame.K_s:
-        self.decimal[1] += self.dashSpeed
-      elif self.lastKey == pygame.K_d:
-        self.decimal[0] += self.dashSpeed
+      try:
+        if self.lastKey == pygame.K_w:
+          self.decimal[1] -= self.dashSpeed
+        elif self.lastKey == pygame.K_a:
+          self.decimal[0] -= self.dashSpeed
+        elif self.lastKey == pygame.K_s:
+          self.decimal[1] += self.dashSpeed
+        elif self.lastKey == pygame.K_d:
+          self.decimal[0] += self.dashSpeed
+      except TypeError:
+        pass
       if self.dashDuration == 0:
         self.isDash = False
         self.lastKey = None
@@ -78,6 +81,7 @@ class Enemy(NotSquare):
 class Boss(NotSquare):  # TODO make class for general (toPlayerVector and collide death) and speed
   def __init__(self, picture, pos, scale):
     NotSquare.__init__(self, picture, pos, scale)
+    self.startMove = 0
     
   def movement(self, arena):
     if self.rect.left < arena.rect.left:
@@ -97,6 +101,15 @@ class Boss(NotSquare):  # TODO make class for general (toPlayerVector and collid
     self.decimal += toCharacterVector(character.rect.center, self.rect.center) * speed
     self.rect.center = self.decimal
   
-  def cleave(self, reelTime, attackTime, distance):
-    pass
+  def cleave(self, character, reelTime, reelSpeed, attackTime, attackSpeed):
+    if self.startMove == 0:
+      self.totalMoveTime = reelTime + attackTime
+    self.startMove += 1
+    if self.startMove % self.totalMoveTime < reelTime:
+      self.decimal -= toCharacterVector(character.rect.center, self.rect.center) * reelSpeed
+    elif self.startMove % self.totalMoveTime == reelTime:
+      self.attackVector = toCharacterVector(character.rect.center, self.rect.center) * attackSpeed
+    elif self.startMove % self.totalMoveTime > reelTime:
+      self.decimal += self.attackVector
+    self.rect.center = self.decimal
   
