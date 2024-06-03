@@ -5,6 +5,7 @@ import time
 
 from modes import *
 from gameStateManager import *
+from gameOver import *
 
 # DO NOT resize the window while fighting, will cause issues
 
@@ -32,8 +33,10 @@ class Game:
     self.play = PlayOptions(self.screen, self.gameStateManager)
     self.settings = Settings(self.screen, self.gameStateManager)
     self.mode = Mode(self.screen, self.gameStateManager)
+    self.gameOver = GameOver(self.screen, self.gameStateManager)
     
-    self.states = {'main': self.main, 'play': self.play, 'settings': self.settings, 'mode': self.mode}
+    self.states = {'main': self.main, 'play': self.play, 'settings': self.settings, 'mode': self.mode,
+                   'gameOver': self.gameOver}
     
     self.lastSingleKey = None
     self.dash = False

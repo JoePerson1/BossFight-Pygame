@@ -53,7 +53,7 @@ class Mode:
     
     if not self.character.invincible:
       if self.boss.rect.collidepoint(self.character.rect.center):
-        print('killed')
+        self.gameStateManager.setState('gameOver')
     
     self.display.blit(self.arena.image, self.arena.rect)
     self.display.blit(self.ui.image, self.ui.rect)
@@ -62,10 +62,11 @@ class Mode:
 
 class EasyMode:
   def __init__(self, display, gameStateManager):
+    # self.sword = NotSquare('assets/sword_red.png', (0, 0), )
     pass
   def run(self, arena, reRender, character, boss):
     # boss.follow(character, 2)
-    boss.cleave(character, 60, 2, 20, 40)
+    boss.cleave(character, 60, 20, .05, 60, 800, .1)  # TODO make moves scalable
   
 class NormalMode:
   def __init__(self, display, gameStateManager):

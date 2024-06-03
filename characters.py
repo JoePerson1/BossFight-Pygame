@@ -13,7 +13,7 @@ class Character(NotSquare):
     self.dashDuration = self.defaultDashDuration
     self.dashSpeed = 20  # TODO add lerp to dash (and basically like half the moves)
     
-    self.invincible = False
+    self.invincible = True
   
   def movement(self, keys, arena):
     horizontalMovement = keys[pygame.K_d] - keys[pygame.K_a]
@@ -74,10 +74,11 @@ class Character(NotSquare):
         self.lastKey = None
     
 class Enemy(NotSquare):
-  def __init__(self, picture, pos, scale, speed):
-    pass
+  def __init__(self, picture, pos, scale):
+    self.hitbox = None
+  def hitbox(self, pos, size):
+    Square.__init__(self.hitbox, pos, size)
   
-    
 class Boss(NotSquare):  # TODO make class for general (toPlayerVector and collide death) and speed
   def __init__(self, picture, pos, scale):
     NotSquare.__init__(self, picture, pos, scale)
@@ -101,15 +102,17 @@ class Boss(NotSquare):  # TODO make class for general (toPlayerVector and collid
     self.decimal += toCharacterVector(character.rect.center, self.rect.center) * speed
     self.rect.center = self.decimal
   
-  def cleave(self, character, reelTime, reelSpeed, attackTime, attackSpeed):
+  def cleave(self, character, reelTime, reelDistance, reelLerp, attackTime, attackDistance, attackLerp):
     if self.startMove == 0:
       self.totalMoveTime = reelTime + attackTime
     self.startMove += 1
     if self.startMove % self.totalMoveTime < reelTime:
-      self.decimal -= toCharacterVector(character.rect.center, self.rect.center) * reelSpeed
+      self.decimal -=\
+        toCharacterVector(character.rect.center, self.rect.center) * reelDistance * reelLerp  # TODO make reelLerp work
     elif self.startMove % self.totalMoveTime == reelTime:
-      self.attackVector = toCharacterVector(character.rect.center, self.rect.center) * attackSpeed
+      self.stillCharacterVector = targetPos(character.rect.center, self.rect.center, attackDistance)
     elif self.startMove % self.totalMoveTime > reelTime:
-      self.decimal += self.attackVector
+      self.decimal += \
+        (self.stillCharacterVector - self.rect.center) * attackLerp
     self.rect.center = self.decimal
   
