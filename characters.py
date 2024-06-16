@@ -1,4 +1,4 @@
-import pygame.time
+import pygame
 
 from sprites import *
 from functions import *

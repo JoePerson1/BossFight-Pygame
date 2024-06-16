@@ -3,3 +3,5 @@
 /.idea
 /planning
 /.vs
+/venv
+/.vscode
