@@ -1,5 +1,16 @@
 import pygame  # TODO hitboxes different than sprite
 
+class ReAdjust():
+  def __init__(self, oldGameSquare, gameSquare, center):
+    self.rect.center = (
+    (self.rect.centerx - oldGameSquare.rect.left) / oldGameSquare.image.get_width() \
+      * gameSquare.image.get_width() + gameSquare.rect.left,
+    (self.rect.centery - oldGameSquare.rect.top) / oldGameSquare.image.get_height() \
+      * gameSquare.image.get_height() + gameSquare.rect.top
+    )
+    self.decimal = pygame.math.Vector2([self.rect.centerx,
+                                        self.rect.centery])
+
 class NotSquare(pygame.sprite.Sprite):
   def __init__(self, picture, pos, scale):   # TODO make scale normal but still stretchable
     pygame.sprite.Sprite.__init__(self)
