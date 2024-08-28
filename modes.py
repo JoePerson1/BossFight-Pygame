@@ -19,7 +19,7 @@ class Mode:
     
     self.start = True
     
-  def run(self, gameSquare, oldGameSquare, reRender, keyPresses):
+  def run(self, gameSquare, reRender, keyPresses):
     if self.start:
       reRender = True
       self.start = False
@@ -44,8 +44,8 @@ class Mode:
       reRender = False
     
     keys = pygame.key.get_pressed()
-    self.modeStates[self.gameStateManager.getMode()].run(gameSquare, oldGameSquare, self.arena, self.gameStateManager,
-                                                         self.character, self.boss)
+    self.modeStates[self.gameStateManager.getMode()].run(self.arena, self.gameStateManager, self.character,
+                                                         self.boss)
     
     self.character.movement(keys, self.arena)
     self.character.dash(self.display, keyPresses)
@@ -64,20 +64,20 @@ class EasyMode:
   def __init__(self, display, gameStateManager):
     # self.sword = NotSquare('assets/sword_red.png', (0, 0), )
     pass
-  def run(self, gameSquare, oldGameSquare, arena, reRender, character, boss):
+  def run(self, arena, reRender, character, boss):
     # boss.follow(character, 2)
     boss.cleave(character, 60, 20, .05, 60, 800, .1)  # TODO make moves scalable
   
 class NormalMode:
   def __init__(self, display, gameStateManager):
     pass
-  def run(self, gameSquare, oldGameSquare, arena, reRender, character, boss):
+  def run(self, arena, reRender, character, boss):
     pass
   
 class HardMode:
   def __init__(self, display, gameStateManager):
     pass
-  def run(self, gameSquare, oldGameSquare, arena, reRender, character, boss):
+  def run(self, arena, reRender, character, boss):
     pass
 
   

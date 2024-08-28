@@ -23,7 +23,6 @@ class Game:
     windowHeight = 1080
     self.gameSquare = Square((windowWidth / 2, windowHeight / 2),
                              (windowWidth, windowHeight))
-    self.oldGameSquare = None
     self.screen = pygame.display.set_mode((windowWidth, windowHeight), pygame.RESIZABLE)
     self.clock = pygame.time.Clock()
     
@@ -51,7 +50,6 @@ class Game:
           pygame.quit()
           sys.exit()
         elif event.type == pygame.VIDEORESIZE:
-          self.oldGameSquare = self.gameSquare
           self.reRender = True
           windowWidth, windowHeight = pygame.display.get_surface().get_size()
           print('windowWidth: ' + str(windowWidth) + ' | WindowHeight: ' + str(windowHeight))  # TODO delete later
@@ -79,8 +77,7 @@ class Game:
       # print(self.keyPresses)  # TODO DECIDE WHETHER TO PUT DOUBLE CLICK DETECTION HERE OR CHARACTER CLASS
       # print(list(self.keyPresses.values()))
 
-      self.states[self.gameStateManager.getState()].run(self.gameSquare, self.oldGameSquare,
-                                                        self.reRender, self.keyPresses)
+      self.states[self.gameStateManager.getState()].run(self.gameSquare, self.reRender, self.keyPresses)
       self.reRender = False
       
       pygame.display.update()
@@ -93,7 +90,7 @@ class MainMenu:
     self.gameStateManager = gameStateManager
     self.start = True
   
-  def run(self, gameSquare, oldGameSquare, reRender, keyPresses):
+  def run(self, gameSquare, reRender, keyPresses):
     if self.start:
       reRender = True
       self.start = False
@@ -152,7 +149,7 @@ class PlayOptions:  # TODO fix bug where if you hold a button you cant go back
     self.start = True
     self.highlightCount = 0
   
-  def run(self, gameSquare, oldGameSquare, reRender, keyPresses):
+  def run(self, gameSquare, reRender, keyPresses):
     if self.start:
       reRender = True
       self.start = False
@@ -228,7 +225,7 @@ class Settings:
     self.gameStateManager = gameStateManager
     self.start = True
   
-  def run(self, gameSquare, oldGameSquare, reRender, keyPresses):
+  def run(self, gameSquare, reRender, keyPresses):
     if self.start:
       reRender = True
       self.start = False
